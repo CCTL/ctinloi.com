@@ -36,17 +36,31 @@ function get_location() {
 }
 
 function get_open_labs() {
-	$.get("getlabs.php", function( data ) {
-	  
-	  var qualityRegex = /Lab.*FREE/g,
-		    matches,
-		    qualities = [];
+	var freelabs_div = document.getElementById("freelabs");
 
-		while (matches = qualityRegex.exec(data)) {
-		    qualities.push(decodeURIComponent(matches[1]));   
+	$.ajax({
+		type: 'GET',
+    url: "http://cgi.cse.unsw.edu.au/~ctin273/labs.php",
+    dataType: 'jsonp',
+    success: function (data) {
+      var freeLabRegex = /Lab.*FREE/gi,
+			  matches,
+			  matchArr = [];
+
+			while (matches = freeLabRegex.exec(data)) {
+			  matchArr.push(decodeURIComponent(matches[0]));   
+			}
+
+			console.log(matchArr);
+			var freeLabArr = [];
+			for(var i = 0; i < matchArr.length; i++){
+				freeLabArr.push(matchArr[i].split(" ")[1]);
+	    }
+	    console.log(freeLabArr);
+
+	    freelabs_div.innerHTML = freeLabArr;
+
 		}
-		console.log(data);
-	});
-
+  });
 }
 
